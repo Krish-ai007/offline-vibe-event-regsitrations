@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Registrations — The Offline Vibe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --logore-ink: #201A16;
+    --logo-terracotta: #D2723A;
+    --logo-sage: #636A49;
+    --logo-cream: #F4EAD5;
+    --ink-mid: rgba(32, 26, 22, 0.65);
+    --line: rgba(32, 26, 22, 0.14);
+    --red: #C5211B;
+    --green: #4C6B3C;
+    --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--logore-ink);
+    color: var(--logore-ink);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    min-height:100vh;
+  }
+
+  /* ---------- Password gate ---------- */
+  #gate{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .gate-card{
+    background: var(--logo-cream);
+    border-radius:14px;
+    padding:40px 36px;
+    width:100%;
+    max-width:380px;
+    box-shadow: 0 30px 70px -15px rgba(0,0,0,0.7);
+    text-align:center;
+  }
+  .gate-card .lock{ font-size:30px; margin-bottom:14px; }
+  .gate-card h1{
+    font-family:'Cinzel Decorative', serif;
+    font-size:18px; letter-spacing:0.06em;
+    margin:0 0 8px;
+  }
+  .gate-card p{ font-size:13px; color:var(--ink-mid); margin:0 0 22px; line-height:1.5; }
+  .gate-card input{
+    width:100%; padding:13px 14px; border-radius:8px;
+    border:1px solid rgba(32,26,22,0.2); font-size:15px;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    outline:none; margin-bottom:14px;
+  }
+  .gate-card input:focus{ border-color:var(--logo-terracotta); box-shadow:0 0 0 3px rgba(210,114,58,0.15); }
+  .gate-card button{
+    width:100%; padding:13px; border:none; border-radius:8px;
+    background:var(--logore-ink); color:var(--logo-cream);
+    font-weight:700; font-size:14px; letter-spacing:0.04em;
+    cursor:pointer; transition: background .2s ease;
+  }
+  .gate-card button:hover{ background:var(--logo-terracotta); }
+  .gate-card button:disabled{ opacity:0.5; cursor:not-allowed; }
+  .gate-error{ color:var(--red); font-size:12.5px; font-weight:600; margin-top:12px; display:none; }
+
+  /* ---------- Dashboard ---------- */
+  #dashboard{ display:none; max-width:1100px; margin:0 auto; padding:32px 20px 60px; }
+
+  .dash-header{
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:14px; margin-bottom:28px;
+  }
+  .dash-title{ color: var(--logo-cream); }
+  .dash-title .eyebrow{
+    font-family:'Cinzel Decorative', serif; font-size:11px; letter-spacing:0.2em;
+    color: var(--logo-terracotta); text-transform:uppercase; margin:0 0 4px;
+  }
+  .dash-title h1{ font-family:'Fraunces', serif; font-weight:600; font-size:26px; margin:0; }
+  .logout-btn{
+    background:transparent; border:1px solid rgba(244,234,213,0.3); color:var(--logo-cream);
+    padding:9px 16px; border-radius:8px; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition: all .2s ease;
+  }
+  .logout-btn:hover{ border-color:var(--logo-terracotta); color:var(--logo-terracotta); }
+
+  .stat-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:14px; margin-bottom:26px; }
+  .stat-card{
+    background: var(--logo-cream); border-radius:10px; padding:18px 20px;
+  }
+  .stat-card .num{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; line-height:1; }
+  .stat-card .label{ font-size:11.5px; color:var(--ink-mid); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; margin-top:6px; }
+  .stat-card.attended .num{ color:var(--green); }
+  .stat-card.pending .num{ color:var(--logo-terracotta); }
+
+  .toolbar{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:18px;
+  }
+  .toolbar input[type="text"]{
+    flex:1; min-width:200px; padding:11px 14px; border-radius:8px; border:none;
+    font-size:13.5px; font-family:'Plus Jakarta Sans', sans-serif; outline:none;
+  }
+  .filter-btn{
+    padding:10px 16px; border-radius:8px; border:1px solid rgba(244,234,213,0.25);
+    background:transparent; color:var(--logo-cream); font-size:12.5px; font-weight:600;
+    cursor:pointer; transition: all .2s ease;
+  }
+  .filter-btn.active{ background:var(--logo-terracotta); border-color:var(--logo-terracotta); }
+  .refresh-btn{
+    padding:10px 16px; border-radius:8px; border:none;
+    background:var(--logo-sage); color:#fff; font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+
+  .empty-state, .loading-state{
+    text-align:center; color:var(--logo-cream); opacity:0.6; padding:60px 20px; font-size:14px;
+  }
+
+  .guest-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px; }
+  .guest-card{
+    background: var(--logo-cream); border-radius:12px; overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow: 0 10px 26px -10px rgba(0,0,0,0.4);
+  }
+  .guest-shot{
+    width:100%; aspect-ratio:16/10; background:#00000010;
+    cursor:pointer; overflow:hidden; position:relative;
+  }
+  .guest-shot img{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .3s ease; }
+  .guest-shot:hover img{ transform:scale(1.04); }
+  .guest-shot .zoom-hint{
+    position:absolute; bottom:8px; right:8px; background:rgba(32,26,22,0.7); color:#fff;
+    font-size:10.5px; padding:3px 8px; border-radius:100px; font-weight:600;
+  }
+  .guest-body{ padding:16px 18px; flex:1; display:flex; flex-direction:column; gap:6px; }
+  .guest-name{ font-family:'Fraunces', serif; font-weight:600; font-size:17px; }
+  .guest-meta{ font-size:12.5px; color:var(--ink-mid); line-height:1.5; word-break:break-word; }
+  .guest-time{ font-size:11px; color:var(--ink-mid); opacity:0.8; margin-top:2px; }
+
+  .guest-footer{
+    padding:12px 18px; border-top:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .status-pill{
+    font-size:11px; font-weight:700; letter-spacing:0.03em; padding:5px 12px; border-radius:100px;
+  }
+  .status-pill.yes{ background:rgba(76,107,60,0.15); color:var(--green); }
+  .status-pill.no{ background:rgba(210,114,58,0.15); color:var(--logo-terracotta); }
+
+  .attend-btn{
+    border:none; border-radius:7px; padding:9px 14px; font-size:12px; font-weight:700;
+    cursor:pointer; transition: all .2s ease;
+  }
+  .attend-btn.mark{ background:var(--logore-ink); color:var(--logo-cream); }
+  .attend-btn.mark:hover{ background:var(--green); }
+  .attend-btn.unmark{ background:transparent; color:var(--ink-mid); border:1px solid var(--line); }
+  .attend-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  /* ---------- Lightbox ---------- */
+  #lightbox{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85);
+    align-items:center; justify-content:center; z-index:100; padding:24px;
+  }
+  #lightbox.show{ display:flex; }
+  #lightbox img{ max-width:100%; max-height:90vh; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  #lightbox .close-btn{
+    position:absolute; top:20px; right:24px; background:rgba(244,234,213,0.15); color:#fff;
+    border:none; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer;
+  }
+
+  @media (max-width:520px){
+    .dash-header{ flex-direction:column; align-items:flex-start; }
+    .guest-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PASSWORD GATE ================= -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="lock">🔒</div>
+    <h1>REGISTRATIONS PORTAL</h1>
+    <p>Authorized access only. Enter the admin password to view guest registrations and payment records.</p>
+    <input type="password" id="passwordInput" placeholder="Admin password" autocomplete="off" />
+    <button id="unlockBtn">Unlock Portal</button>
+    <div class="gate-error" id="gateError">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard">
+  <div class="dash-header">
+    <div class="dash-title">
+      <p class="eyebrow">The Offline Vibe</p>
+      <h1>Event Registrations</h1>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Lock Portal</button>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">Total Registered</div></div>
+    <div class="stat-card attended"><div class="num" id="statAttended">0</div><div class="label">Checked In</div></div>
+    <div class="stat-card pending"><div class="num" id="statPending">0</div><div class="label">Not Yet Arrived</div></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Search by name, email or phone…" />
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="pending">Pending</button>
+    <button class="filter-btn" data-filter="attended">Attended</button>
+    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+  </div>
+
+  <div class="loading-state" id="loadingState">Loading registrations…</div>
+  <div class="empty-state" id="emptyState" style="display:none;">No registrations match this view.</div>
+  <div class="guest-grid" id="guestGrid"></div>
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+<div id="lightbox">
+  <button class="close-btn" id="lightboxClose">✕</button>
+  <img id="lightboxImg" src="" alt="Payment screenshot" />
+</div>
+
+<script>
+  /* ============================================================
+     BACKEND CONNECTION — same Apps Script URL as register.html
+     ============================================================ */
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywSpHDaGBU6avCVKN3-Y3qZNNqaj6Aa36zBjB5Q5oGXTXv_2Rshohlg-426ljcvdyA/exec";
+
+  const gate = document.getElementById('gate');
+  const dashboard = document.getElementById('dashboard');
+  const passwordInput = document.getElementById('passwordInput');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const gateError = document.getElementById('gateError');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const statTotal = document.getElementById('statTotal');
+  const statAttended = document.getElementById('statAttended');
+  const statPending = document.getElementById('statPending');
+  const searchInput = document.getElementById('searchInput');
+  const guestGrid = document.getElementById('guestGrid');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  let sessionPassword = '';
+  let allRows = [];
+  let currentFilter = 'all';
+
+  // ---------- Unlock flow ----------
+  // The password is verified by the Apps Script backend itself
+  // (not just checked in this page), so it can't be bypassed by
+  // reading the page's source code.
+
+  unlockBtn.addEventListener('click', tryUnlock);
+  passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
+
+  async function tryUnlock() {
+    const pwd = passwordInput.value.trim();
+    if (!pwd) return;
+    unlockBtn.disabled = true;
+    unlockBtn.textContent = 'Checking…';
+    gateError.style.display = 'none';
+
+    try {
+      const rows = await fetchList(pwd);
+      sessionPassword = pwd;
+      sessionStorage.setItem('ov_admin_pwd', pwd);
+      gate.style.display = 'none';
+      dashboard.style.display = 'block';
+      allRows = rows;
+      renderGuests();
+    } catch (err) {
+      gateError.textContent = err.message || 'Incorrect password. Please try again.';
+      gateError.style.display = 'block';
+    } finally {
+      unlockBtn.disabled = false;
+      unlockBtn.textContent = 'Unlock Portal';
+    }
+  }
+
+  logoutBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('ov_admin_pwd');
+    sessionPassword = '';
+    dashboard.style.display = 'none';
+    gate.style.display = 'flex';
+    passwordInput.value = '';
+  });
+
+  // Auto-unlock if this browser tab already verified the password this session
+  (async function checkSavedSession() {
+    const saved = sessionStorage.getItem('ov_admin_pwd');
+    if (saved) {
+      try {
+        const rows = await fetchList(saved);
+        sessionPassword = saved;
+        allRows = rows;
+        gate.style.display = 'none';
+        dashboard.style.display = 'block';
+        renderGuests();
+      } catch (err) {
+        sessionStorage.removeItem('ov_admin_pwd');
+      }
+    }
+  })();
+
+  // ---------- Data fetching ----------
+
+  async function fetchList(pwd) {
+    const url = SCRIPT_URL + '?action=list&password=' + encodeURIComponent(pwd);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error === 'Unauthorized' ? 'Incorrect password. Please try again.' : data.error);
+    return data.rows;
+  }
+
+  refreshBtn.addEventListener('click', async () => {
+    if (!sessionPassword) return;
+    refreshBtn.textContent = '↻ Refreshing…';
+    try {
+      allRows = await fetchList(sessionPassword);
+      renderGuests();
+    } catch (err) {
+      alert('Could not refresh: ' + err.message);
+    } finally {
+      refreshBtn.textContent = '↻ Refresh';
+    }
+  });
+
+  // ---------- Filtering & search ----------
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderGuests();
+    });
+  });
+
+  searchInput.addEventListener('input', renderGuests);
+
+  function getFilteredRows() {
+    const q = searchInput.value.trim().toLowerCase();
+    return allRows.filter(r => {
+      if (currentFilter === 'attended' && !r.attended) return false;
+      if (currentFilter === 'pending' && r.attended) return false;
+      if (!q) return true;
+      return (r.name || '').toLowerCase().includes(q)
+          || (r.email || '').toLowerCase().includes(q)
+          || (r.phone || '').toLowerCase().includes(q);
+    });
+  }
+
+  // ---------- Rendering ----------
+
+  function renderGuests() {
+    loadingState.style.display = 'none';
+
+    const total = allRows.length;
+    const attended = allRows.filter(r => r.attended).length;
+    statTotal.textContent = total;
+    statAttended.textContent = attended;
+    statPending.textContent = total - attended;
+
+    const rows = getFilteredRows();
+    guestGrid.innerHTML = '';
+
+    if (rows.length === 0) {
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    rows.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'guest-card';
+
+      const when = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+
+      card.innerHTML = `
+        <div class="guest-shot" data-url="${escapeHtml(r.screenshotUrl)}">
+          <img src="${escapeHtml(r.screenshotUrl)}" alt="Payment screenshot for ${escapeHtml(r.name)}" loading="lazy" />
+          <span class="zoom-hint">Tap to verify</span>
+        </div>
+        <div class="guest-body">
+          <div class="guest-name">${escapeHtml(r.name)}</div>
+          <div class="guest-meta">${escapeHtml(r.email)}<br>${escapeHtml(r.phone)}</div>
+          <div class="guest-time">Registered ${when}</div>
+        </div>
+        <div class="guest-footer">
+          <span class="status-pill ${r.attended ? 'yes' : 'no'}">${r.attended ? '✓ Attended' : 'Pending'}</span>
+          <button class="attend-btn ${r.attended ? 'unmark' : 'mark'}" data-id="${escapeHtml(r.id)}" data-attended="${r.attended ? '1' : '0'}">
+            ${r.attended ? 'Undo' : 'Mark Attended'}
+          </button>
+        </div>
+      `;
+
+      guestGrid.appendChild(card);
+    });
+
+    document.querySelectorAll('.guest-shot').forEach(el => {
+      el.addEventListener('click', () => openLightbox(el.dataset.url));
+    });
+
+    document.querySelectorAll('.attend-btn').forEach(btn => {
+      btn.addEventListener('click', () => toggleAttended(btn));
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // ---------- Mark attended ----------
+
+  async function toggleAttended(btn) {
+    const id = btn.dataset.id;
+    const currentlyAttended = btn.dataset.attended === '1';
+    const nextState = !currentlyAttended;
+
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'markAttended', id: id, password: sessionPassword, attended: nextState })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+
+      const row = allRows.find(r => r.id === id);
+      if (row) row.attended = nextState;
+      renderGuests();
+
+    } catch (err) {
+      alert('Could not update attendance: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = currentlyAttended ? 'Undo' : 'Mark Attended';
+    }
+  }
+
+  // ---------- Lightbox ----------
+
+  function openLightbox(url) {
+    lightboxImg.src = url;
+    lightbox.classList.add('show');
+  }
+  lightboxClose.addEventListener('click', () => lightbox.classList.remove('show'));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('show'); });
+</script>
+
+</body>
+</html>

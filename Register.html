@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Official Ticket — The Offline Vibe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     OFFLINE VIBE PREMIUM TICKET SYSTEM
+     Colors extracted from the logo:
+     - Cream/Badge Back: #F4EAD5
+     - Deep Black Ink: #201A16
+     - Terracotta Orange: #D2723A
+     - Sage Accent: #636A49
+     - Fine Print Grey: #988E83
+     ============================================================ */
+  :root{
+    --logore-ink: #201A16;
+    --logo-terracotta: #D2723A;
+    --logo-sage: #636A49;
+    --logo-cream: #F4EAD5;
+
+    --paper-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><g fill="%23201a16" fill-opacity="0.02"><path d="M0 0h60v60H0z"/><circle cx="30" cy="30" r="1" /></g></svg>');
+
+    --ink-mid: rgba(32, 26, 22, 0.7);
+    --line: rgba(32, 26, 22, 0.15);
+    --red: #C5211B;
+
+    --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color: var(--logore-ink);
+    color: var(--logore-ink);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 16px;
+    background-image:
+        var(--paper-texture),
+        radial-gradient(circle at 20% 20%, rgba(210, 114, 58, 0.08), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(99, 106, 73, 0.09), transparent 40%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  .stage{
+    width:100%;
+    max-width:540px;
+    position: relative;
+    padding-bottom: 40px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: ticketEntrance 1.2s var(--transition-smooth) forwards;
+  }
+
+  @keyframes ticketEntrance {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ticket{
+    position: relative;
+    background: var(--logo-cream);
+    color: var(--logore-ink);
+    border-radius: 12px;
+    overflow: visible;
+    box-shadow:
+        0 30px 70px -15px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 0 0 1px rgba(32, 26, 22, 0.05) inset;
+    background-image: var(--paper-texture);
+    padding: 12px;
+    transition: transform 0.4s var(--transition-smooth), box-shadow 0.4s var(--transition-smooth);
+  }
+
+  .ticket-content {
+      border: 1px solid rgba(32, 26, 22, 0.25);
+      border-radius: 8px;
+      position: relative;
+  }
+
+  .ticket-content::before, .ticket-content::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-style: solid;
+      border-color: var(--logo-terracotta);
+      pointer-events: none;
+      opacity: 0.6;
+      transition: all 0.4s var(--transition-smooth);
+  }
+  .ticket-content::before { top: 12px; left: 12px; border-width: 1.5px 0 0 1.5px; }
+  .ticket-content::after { bottom: 12px; right: 12px; border-width: 0 1.5px 1.5px 0; }
+
+  .poster-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio: 16 / 10;
+    background: var(--logore-ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border-bottom: 1px solid rgba(32, 26, 22, 0.2);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  .poster-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .poster-placeholder{
+    text-align:center;
+    color:rgba(244, 234, 213, 0.6);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:13px;
+    padding:24px;
+    line-height:1.5;
+    letter-spacing: 0.05em;
+  }
+  .poster-placeholder strong {
+    display:block;
+    font-family:'Cinzel Decorative', serif;
+    font-size:22px;
+    font-weight: 700;
+    letter-spacing:0.06em;
+    color:var(--logo-terracotta);
+    margin-bottom:8px;
+  }
+
+  .event-title-band{ padding: 28px 32px 24px; border-bottom: 1px dashed var(--line); }
+  .eyebrow{
+    font-family:'Cinzel Decorative', serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--logo-sage);
+    margin:0 0 10px;
+  }
+  .event-title-band h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.15;
+    margin:0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .event-meta{
+    display:flex; flex-wrap:wrap; gap:8px 24px;
+    font-size:13px; color:var(--ink-mid); font-weight: 600; letter-spacing: 0.02em;
+  }
+  .event-meta span{ display:flex; align-items:center; gap:8px; }
+
+  .perforation{ position:relative; height:0; z-index: 10; }
+  .perforation::before{
+    content:""; position:absolute; left:-15px; right:-15px; top:-0.5px; height:0;
+    border-top:1px dashed rgba(32, 26, 22, 0.25);
+  }
+  .notch{ position:absolute; width: 24px;height: 24px; background: var(--logore-ink); border-radius:50%; top: -12px; }
+  .notch.left{ left:-25px; }
+  .notch.right{ right:-25px; }
+
+  form{ padding: 32px; position: relative; }
+  form::before {
+      content: "OFFICIAL REGISTRATION PASS";
+      position: absolute; left: 32px; top: 14px;
+      font-size: 10px; font-weight: 700; color: rgba(32, 26, 22, 0.35); letter-spacing: 0.2em;
+  }
+
+  .step-label{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; letter-spacing:0.1em; font-size:12px;
+    color: var(--logo-terracotta);
+    margin: 12px 0 20px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6px;
+  }
+
+  .field{ margin-bottom:20px; }
+  .field label{
+    display:block; font-size:13px; font-weight:600; color:var(--logore-ink);
+    margin-bottom:6px; letter-spacing: 0.01em;
+  }
+  .field label .req{ color:var(--red); }
+
+  .field input[type="text"],
+  .field input[type="email"],
+  .field input[type="tel"]{
+    width:100%; padding:13px 16px; border-radius: 6px;
+    border: 1px solid rgba(32, 26, 22, 0.2);
+    background: rgba(255, 255, 255, 0.5);
+    font-size:14.5px; font-family:'Plus Jakarta Sans', sans-serif;
+    color:var(--logore-ink); outline:none;
+    transition: all .2s var(--transition-smooth);
+  }
+  .field input:focus{
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(210, 114, 58, 0.15);
+    border-color: var(--logo-terracotta);
+  }
+  .field .hint{ font-size:11.5px; color: rgba(32, 26, 22, 0.5); margin-top:6px; font-weight: 500; }
+  .field .error{ font-size:12px; color:var(--red); margin-top:6px; display:none; font-weight:600; }
+  .field.invalid input{ border-color:var(--red); background-color: rgba(197, 33, 27, 0.02); }
+  .field.invalid .error{ display:block; }
+
+  .pay-block{
+    background: rgba(32, 26, 22, 0.02);
+    border-radius: 8px; padding:24px; margin: 28px 0;
+    border: 1px solid rgba(32, 26, 22, 0.12);
+  }
+  .pay-block .step-label{ margin-bottom:12px; }
+  .pay-block p.sub{ font-size:13px; color:var(--ink-mid); margin:0 0 20px; line-height:1.6; font-weight: 500; }
+  .qr-wrap{ display:flex; justify-content:center; margin-bottom:24px; }
+  .qr-frame{
+    background:#fff; padding:14px; border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(32, 26, 22, 0.08);
+    width:190px; height:190px; display:flex; align-items:center; justify-content:center;
+    border: 1px solid rgba(32, 26, 22, 0.1);
+  }
+  .qr-frame img{ width:100%; height:100%; object-fit:contain; }
+  .qr-placeholder{ text-align:center; font-size:12px; color:rgba(32, 26, 22, 0.4); line-height:1.5; }
+
+  .amount-pill{
+    display:block; text-align:center;
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing:0.05em; font-size:18px;
+    color: var(--logo-cream); background: var(--logore-ink); border-radius: 6px;
+    padding: 10px 24px; margin: 0 auto 24px; width:fit-content;
+    box-shadow: 0 4px 15px rgba(32, 26, 22, 0.15);
+  }
+
+  .upload-box input[type="file"] {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); border: 0;
+  }
+  .upload-box{
+    border: 1px dashed rgba(32, 26, 22, 0.3); border-radius: 6px; padding: 24px 16px;
+    text-align:center; background: #fff; cursor:pointer; transition: all .2s var(--transition-smooth);
+    display: block; position: relative;
+  }
+  .upload-box:hover{ border-color:var(--logo-terracotta); background-color: rgba(210, 114, 58, 0.02); }
+  .upload-box.has-file{ border-style: solid; border-color: var(--logo-sage); background: rgba(99, 106, 73, 0.04); }
+  .upload-icon{ font-size:24px; margin-bottom:8px; display:block; color: var(--logo-sage); }
+  .upload-box .u-title{ font-size:13.5px; font-weight:700; color:var(--logore-ink); margin-bottom:4px; }
+  .upload-box .u-sub{ font-size:12px; color: var(--ink-mid); }
+  .preview-thumb{ margin-top:16px; display:none; justify-content:center; }
+  .preview-thumb img{ max-height:150px; border-radius: 6px; box-shadow:0 5px 15px rgba(0,0,0,0.15); }
+  .file-error{ font-size:12px; color:var(--red); margin-top:12px; font-weight:600; text-align:center; display:none; }
+
+  .submit-btn{
+    width:100%; padding: 20px; border: 1px solid var(--logo-terracotta); border-radius: 6px;
+    background: var(--logore-ink); color: var(--logo-cream);
+    font-family:'Cinzel Decorative', serif; letter-spacing:0.15em; font-size:15px; font-weight: 700;
+    cursor:pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(210, 114, 58, 0.2);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .submit-btn:hover{
+    background-color: var(--logo-terracotta); color: #fff; border-color: transparent;
+    box-shadow: 0 15px 35px rgba(210, 114, 58, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  .submit-btn:active{ transform: translateY(1px); }
+  .submit-btn:disabled{ opacity:0.55; cursor:not-allowed; box-shadow: none; transform: none; }
+
+  .spinner{
+    width:16px; height:16px; border-radius:50%;
+    border: 2.5px solid rgba(244,234,213,0.35);
+    border-top-color: var(--logo-cream);
+    animation: spin 0.7s linear infinite;
+    display:none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .submit-btn.loading .spinner{ display:inline-block; }
+  .submit-btn.loading .btn-label{ opacity:0.8; }
+
+  .submit-error{
+    text-align:center; font-size:13px; color:var(--red); font-weight:600;
+    margin-top:14px; display:none; line-height:1.5;
+  }
+
+  .fine-print{
+    text-align:center; font-size:11.5px; color: var(--logo-cream); opacity: 0.4;
+    margin-top: 24px; line-height:1.6; font-weight: 400;
+  }
+
+  .thanks-screen{ display:none; text-align:center; padding: 64px 32px; }
+  .thanks-screen.show{ display:block; }
+  #registerScreen.hide{ display:none; }
+
+  .stamp{
+    width: 80px;height: 80px; border-radius:50%; border: 2px solid var(--logo-sage);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 28px;
+    font-size:36px; color: var(--logo-sage); transform: rotate(-8deg); font-weight: 700;
+    box-shadow: 0 0 0 6px var(--logo-cream);
+  }
+  .thanks-screen h2{
+    font-family:'Cinzel Decorative', serif; font-weight: 700; font-size:24px; line-height: 1.3;
+    margin:0 0 20px; letter-spacing: 0.05em;
+  }
+  .thanks-screen p{ font-size: 15px; line-height:1.65; color: var(--ink-mid); max-width:380px; margin:0 auto 14px; font-weight: 500; }
+  .thanks-screen .delivery-note{
+    display:inline-block; margin-top:20px; background: rgba(32, 26, 22, 0.06); border-radius: 4px;
+    padding:10px 20px; font-size:13px; font-weight: 600; color: var(--logore-ink);
+  }
+  .thanks-screen .sign-off{
+    margin-top: 32px; font-family:'Fraunces', serif; font-style: italic; font-weight:600;
+    color:var(--logo-terracotta); font-size:24px;
+  }
+
+  @media (max-width:420px){
+    .ticket { padding: 8px; }
+    .event-title-band { padding: 24px 20px; }
+    .event-title-band h1{ font-size: 26px; }
+    form { padding: 24px 20px; }
+    form::before { left: 20px; }
+    .pay-block { padding: 16px; }
+    .qr-frame{ width:170px; height:170px; }
+    .submit-btn { font-size: 13px; padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="ticket">
+      <div class="ticket-content">
+
+        <!-- ================= REGISTRATION SCREEN ================= -->
+        <div id="registerScreen">
+
+          <!-- 1. EVENT POSTER — replace the src below with your poster image URL -->
+          <div class="poster-wrap">
+            <img
+              src="Event_Poster_MOSAIC.png"
+              alt="Event poster"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <div class="poster-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; position:absolute; top:0; left:0;">
+              <strong>Special Event Pass</strong>
+              Replace the image source in the code<br>with your event poster to display it here.
+            </div>
+          </div>
+
+          <div class="event-title-band">
+            <p class="eyebrow">An Invitation Awaits</p>
+            <!-- Replace with your event name -->
+            <h1>MOSAIC 2026</h1>
+            <div class="event-meta">
+              <span>📅 Date :- 18/07/2026 &amp; Time : 6:30 PM Onwards</span>
+              <a href="https://maps.app.goo.gl/tz1XwMSMineiMcaw8" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease;">
+    <span class="location-link">📍 Venue / City</span>
+  </a>
+            </div>
+          </div>
+
+          <div class="perforation"><span class="notch left"></span><span class="notch right"></span></div>
+
+          <form id="regForm" novalidate>
+
+            <p class="step-label">I. GUEST PROFILE</p>
+
+            <div class="field" id="nameField">
+              <label for="fullName">Full Name <span class="req">*</span></label>
+              <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required />
+              <div class="error">Please provide your given name.</div>
+            </div>
+
+            <div class="field" id="emailField">
+              <label for="email">Email Address <span class="req">*</span></label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required />
+              <div class="error">A valid email is required for confirmation.</div>
+            </div>
+
+            <div class="field" id="phoneField">
+              <label for="phone">Phone / WhatsApp Number <span class="req">*</span></label>
+              <input type="tel" id="phone" name="phone" placeholder="10-digit mobile number" required />
+              <div class="hint">Your pass will be delivered securely via WhatsApp.</div>
+              <div class="error">A contact number is essential.</div>
+            </div>
+
+            <div class="pay-block">
+              <p class="step-label">II. REGISTRATION FEE</p>
+              <p class="sub">Please scan the code to settle the fee, then upload your transaction receipt image.</p>
+
+              <!-- 2. AMOUNT — edit the ticket price -->
+              <span class="amount-pill">₹ 199 / Person</span>
+
+              <!-- 3. QR CODE IMAGE — replace with your payment QR code -->
+              <div class="qr-wrap">
+                <div class="qr-frame">
+                  <img
+                    src="Payment_QR.jpeg"
+                    alt="Payment QR code"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                  />
+                  <div class="qr-placeholder" style="display:none;">
+                    Official Payment<br>QR Code Image
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. PAYMENT SCREENSHOT UPLOAD -->
+              <label class="upload-box" id="uploadBox" for="paymentProof">
+                <input type="file" id="paymentProof" name="paymentProof" accept="image/*" required />
+                <span class="upload-icon">📎</span>
+                <div class="u-title">Attach transaction receipt</div>
+                <div class="u-sub">Tap here to choose a screenshot or photo</div>
+              </label>
+              <div class="preview-thumb" id="previewThumb"><img id="previewImg" src="" alt="Payment screenshot preview" /></div>
+              <div class="file-error" id="fileError">A payment receipt image is mandatory to complete your booking.</div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span class="spinner"></span>
+              <span class="btn-label">Secure Admission Pass</span>
+            </button>
+            <div class="submit-error" id="submitError">Something went wrong sending your registration. Please check your connection and try again.</div>
+          </form>
+        </div>
+
+        <!-- ================= THANK YOU SCREEN ================= -->
+        <div class="thanks-screen" id="thanksScreen">
+          <div class="stamp">✓</div>
+          <h2>Verification Underway</h2>
+          <p>We've received your profile data and transaction receipt for official verification.</p>
+          <p>Your admission pass will be generated and delivered within <strong>12 to 24 hours</strong>.</p>
+          <div class="delivery-note">📧 Email Confirmation &nbsp; · &nbsp; 💬 WhatsApp Ticket</div>
+          <p class="sign-off">see you offline</p>
+        </div>
+      </div>
+  </div>
+
+  <p class="fine-print">Experiencing verification issues? Please ensure your receipt cleanly presents the transaction ID.<br>Powered by The Offline Vibe.</p>
+</div>
+
+<script>
+  /* ============================================================
+     BACKEND CONNECTION
+     Paste the Web App URL you get after deploying the Google
+     Apps Script (see SETUP-GUIDE.md) between the quotes below.
+     ============================================================ */
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywSpHDaGBU6avCVKN3-Y3qZNNqaj6Aa36zBjB5Q5oGXTXv_2Rshohlg-426ljcvdyA/exec";
+
+  const form = document.getElementById('regForm');
+  const nameInput = document.getElementById('fullName');
+  const emailInput = document.getElementById('email');
+  const phoneInput = document.getElementById('phone');
+  const fileInput = document.getElementById('paymentProof');
+  const uploadBox = document.getElementById('uploadBox');
+  const previewThumb = document.getElementById('previewThumb');
+  const previewImg = document.getElementById('previewImg');
+  const fileError = document.getElementById('fileError');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitError = document.getElementById('submitError');
+
+  let compressedImage = null; // { base64, mime }
+
+  // Resize + compress the screenshot client-side so uploads stay fast
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxWidth = 1000;
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          resolve({ base64: dataUrl.split(',')[1], mime: 'image/jpeg' });
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  fileInput.addEventListener('change', async () => {
+    if (fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      try {
+        compressedImage = await compressImage(file);
+        previewImg.src = 'data:' + compressedImage.mime + ';base64,' + compressedImage.base64;
+        previewThumb.style.display = 'flex';
+        uploadBox.classList.add('has-file');
+        uploadBox.querySelector('.u-title').textContent = file.name;
+        uploadBox.querySelector('.u-sub').textContent = 'Receipt accepted — tap to change';
+        fileError.style.display = 'none';
+      } catch (err) {
+        fileError.textContent = 'Could not read that image. Please try another file.';
+        fileError.style.display = 'block';
+        compressedImage = null;
+      }
+    }
+  });
+
+  function setInvalid(fieldId, isInvalid) {
+    document.getElementById(fieldId).classList.toggle('invalid', isInvalid);
+  }
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validPhone(v) { return /^[0-9+\-\s]{7,15}$/.test(v); }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    let ok = true;
+
+    if (!nameInput.value.trim()) { setInvalid('nameField', true); ok = false; }
+    else setInvalid('nameField', false);
+
+    if (!validEmail(emailInput.value.trim())) { setInvalid('emailField', true); ok = false; }
+    else setInvalid('emailField', false);
+
+    if (!validPhone(phoneInput.value.trim())) { setInvalid('phoneField', true); ok = false; }
+    else setInvalid('phoneField', false);
+
+    if (!compressedImage) {
+      fileError.style.display = 'block';
+      ok = false;
+    } else {
+      fileError.style.display = 'none';
+    }
+
+    if (!ok) return;
+
+    submitError.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+        body: JSON.stringify({
+          action: 'register',
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          imageBase64: compressedImage.base64,
+          imageMime: compressedImage.mime
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      document.getElementById('registerScreen').classList.add('hide');
+      document.getElementById('thanksScreen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      submitError.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+    }
+  });
+</script>
+
+</body>
+</html>
